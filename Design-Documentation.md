@@ -78,6 +78,89 @@ Type-C Cables are reversible, to handle this, the connector has two sets of D+ a
 - Schematic Symbol: `USB_C_Receptacle_USB2.0_16P`
 - PCB Footprint: `USB_C_Receptable_HRO_TYPE-C-31-M-12`
 
+### Going through USB type Connector Datasheet
+
+The pin layout for the 16-pin USB 2.0 Type-C receptacle [HRO TYPE-C-31-M-12] explains:
+**Power & Ground Pins**
+- GND Pins (A1, B12, A13, B1):
+    - Function: System power and signal reference ground for the host side.
+    - Physical Layout: On this connector, A1 & B12 are tied together into a single left pad, and A12 & B1 are tied into a single right pad.
+    - How to Wire: Connect both outer ground pads to your USB Host Ground plane (GND_USB). Do not connect this directly to your target board's isolated ground plane.
+- vbus pINS (A4, B9, A9, B4):
+    - Function: +5V DC power provided by the host computer (up to 500mA by default for USB 2.0, or 1.5A/3A if advertised).
+    - How to Wire: Connect these pads together to form your primary VBUS_5V rail. This rail will power:
+        - Your USB-to-UART bridge IC (CP2102N / CH343).
+        - Side 1 (Host side) of your digital isolator IC.
+        - The primary input side of your isolated DC-DC converter.
+    - Design Note: Place a 10µF bulk capacitor in parallel with a 0.1µF ceramic decoupling capacitor right next to these pins to filter incoming noise.
+
+**Configuration Channel Pins**
+- CC1 (A5) & CC2 (B5) Pins:
+    - Function: Used by the host (laptop/PC) to detect cable insertion, determine plug orientation, and allocate power.
+    - How to Wire:
+        - Connect CC1 (A5) through a 5.1 kΩ resistor (1% tolerance) to `GND_USB`.
+        - Connect CC2 (B5) through a separate 5.1 kΩ resistor (1% tolerance) to `GND_USB`.
+    - Warning: Do not short CC1 and CC2 together to share a single 5.1 kΩ resistor! Doing so causes electronically marked (E-Marked) Type-C cables to misidentify your board, and the host will refuse to send 5V on VBUS.
+
+**USB 2.0 Data Differentail Pair**
+- DP1 (A6) & DP2 (B6) Pins are the USB Data Plus (D+) and DN1 (A7) & DN2 (B7) Pins are the USB Data Minus (D-).
+- Function: The high-speed differential signal pair that carries USB 2.0 data packets.
+- Why are there two DP and two DN pins? To allow the Type-C cable to be reversible. Depending on which way you plug the cable in, the host connects its single `D+`/`D-` pair to either set (A6/A7 or B6/B7).
+- How to Wire:
+    - On your PCB layout, short DP1 (A6) directly to DP2 (B6) right at the connector pads to create a single `USB_D+` trace.
+    - Short DN1 (A7) directly to DN2 (B7) to create a single `USB_D-` trace.
+    - Route these two traces as a differential pair through a TVS ESD protection diode array (like a USBLC6-2SC6) directly to the `D+` and `D-` pins of your bridge IC.
+
+**Sideband Use Pins**
+- SBU1 (A8) & SBU2 (B8) Pins are the Sideband Use Pins.
+- Function: Reserved for USB Type-C "Alternate Modes" (e.g., carrying DisplayPort audio/video signals or Thunderbolt sideband data).
+- How to Wire: Leave these pins floating / Not Connected (NC). USB-to-UART, RS485, and CAN devices do not use Sideband signals.
+
+**Shield Pins**
+- These pins are at the Outer Shell of the connector.
+- Connect to `GND_USB` (optionally via 1MΩ + 4.7nF RC filter for ESD)
+- How to Wire the Shield Pins:
+    - Option A: Direct to USB Ground (The Simple Way)
+        - How: Connect all four shield pins directly to your `GND_USB` plane.
+        - Pros: Requires zero extra components. It provides a massive, immediate path for ESD to disperse into the ground plane.
+        - Cons: It can create a "DC Ground Loop." If the host PC's chassis ground sits at a slightly different voltage potential than your board's local ground, a continuous DC current will flow through the USB cable's shield, which can actually introduce low-frequency noise.
+    - Option B: The RC Filter (The Professional/Industrial Way)
+        - How: Connect the shield pins to a dedicated SHIELD net in your schematic. Then, connect that SHIELD net to your GND_USB plane through a parallel Resistor-Capacitor (RC) network.
+        - The Components: Use a high-value resistor (typically 1MΩ) in parallel with a high-voltage ceramic capacitor (typically 4.7nF or 10nF rated for 2kV or 3kV).
+        - Why it works: The 1MΩ resistor blocks continuous DC ground loops from forming between the laptop chassis and your module. However, when a high-frequency event occurs (like an ESD strike or RF noise), the capacitor acts as a short circuit, instantly shunting the dangerous high-frequency energy directly into the `GND_USB` plane.
+
+**Summary Checklist for Connector Connections**
+
+| **Pin / Pad** | **Name** | **Schematic Connection** |
+| --- | --- | --- |
+| **A1, B12, A12, B1** | GND | Connect to `GND_USB` plane |
+| **A4, B9, A9, B4** | VBUS | Connect to `VBUS_5V` (with 10µF + 0.1µF caps) |
+| **A5** | CC1 | 5.1 kΩ resistor $\rightarrow$ `GND_USB` |
+| **B5** | CC2 | 5.1 kΩ resistor $\rightarrow$ `GND_USB` |
+| **A6, B6** | DP1, DP2 | Tie together $\rightarrow$ ESD Diode $\rightarrow$ Bridge IC $D+$ |
+| **A7, B7** | DN1, DN2 | Tie together $\rightarrow$ ESD Diode $\rightarrow$ Bridge IC $D-$ |
+| **A8, B8** | SBU1, SBU2 | Leave Unconnected (NC) |
+| **Shield Pins** | Outer Shell | Connect to `GND_USB` (optionally via 1MΩ + 4.7nF RC filter for ESD) |
+
+### USB C TVS Diode Selection - USBLC6-2SC6
+The USBLC6 (specifically the USBLC6-2SC6 by STMicroelectronics) is the gold standard for USB 2.0 ESD protection in custom embedded hardware.
+The USBLC6-2SC6 offers:
+1. Ultra-Low Capacitance: It boasts a parasitic capacitance of typically 3.5 pF. This is low enough to ensure pristine signal integrity even at USB 2.0 High-Speed (480 Mbps) rates.
+2. Rail-to-Rail Topology: Inside the SOT23-6L package, there are four "steering diodes" and one large central TVS clamping diode. If a massive positive ESD spike hits the `D+` line, the steering diode instantly dumps that energy into the `VBUS` line, where the central TVS diode clamps it safely to `GND`. If a negative spike hits, it steers it directly to `GND`.
+3. VBUS Protection Included: Because it connects to the VBUS rail, it also provides a layer of transient protection for the 5V power line itself.
+
+#### Schematic Wiring (SOT23-6L Package)
+The USBLC6-2SC6 has 6 pins. It acts as a "pass-through" filter sitting between the Type-C connector and your USB-to-UART Bridge IC.
+- Pin 1 (I/O 1 - Input): Connect to DP1/DP2 (D+) coming directly from the Type-C connector.
+- Pin 2 (GND): Connect to your `GND_USB` plane.
+- Pin 3 (I/O 2 - Input): Connect to DN1/DN2 (D-) coming directly from the Type-C connector.
+- Pin 4 (I/O 2 - Output): Connect this to the D- input on your USB-to-UART Bridge IC.
+- Pin 5 (VBUS): Connect to your `VBUS_5V` rail.
+- Pin 6 (I/O 1 - Output): Connect this to the D+ input on your USB-to-UART Bridge IC.
+
+Note: The traces must physically flow into Pins 1 & 3 of the USBLC6, and the traces to the bridge IC must originate from Pins 6 & 4. This forces the physical energy to pass directly over the internal silicon of the protection diodes.
+
+
 ## USB-UART IC Selection for Design
 
 ### Design Research
@@ -157,6 +240,10 @@ However, if an easier soldering experience (SOP-16 package) is preferred and val
 **KiCad EDA Support:**
 - Schematic Symbol: `CP2102N-Axx-xQFN24`
 - PCB Footprint: `Package_DFN_QFN:QFN-24-1EP_4x4mm_P0.5mm_EP2.6x2.6mm`
+
+### Going through CP2102N Datasheet
+WIP
+
 
 ## Digital Isolator IC Selection for Design
 
