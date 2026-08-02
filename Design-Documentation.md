@@ -279,30 +279,30 @@ Baed on our requirement to support RS485 & Standard UART with flow control"
 3. Alternative (Magnetic): The Analog Devices ADuM162N provides 6 channels (4 Forward, 2 Reverse) using micro-transformers instead of capacitors, offering similar excellent performance.
 
 ### Part Details
-**Part Selected:** ISO7762FQDBQRQ1
+**Part Selected:** ISO6762DWR
 
-**Link:** [ISO7762FQDBQRQ1 IC Link from Lion Circuits](https://www.lioncircuits.com/parts/ISO7762FQDBQRQ1?srsltid=AfmBOoquK7JiM8z7DRHPI3oGgv9Y59p6Nyc9ku_tFeeLesaEsPXBdm0mtiw)
+**Link:** [ISO6762DWR IC Link from Lion Circuits](https://www.lioncircuits.com/parts/ISO6762DWR)
 
 **KiCad EDA Support:**
-- Schematic Symbol: `CP2102N-Axx-xQFN24`
-- PCB Footprint: `Package_DFN_QFN:QFN-24-1EP_4x4mm_P0.5mm_EP2.6x2.6mm`
+- Schematic Symbol: `XX`
+- PCB Footprint: `XX`
 
 #### Part Information
-The ISO7762FQDBQRQ1 is indeed a 6-channel (4 Forward, 2 Reverse) digital isolator from Texas Instruments. It perfectly matches the required channel configuration for your modular tool.
+The ISO6762DWR is indeed a 6-channel (4 Forward, 2 Reverse) digital isolator from Texas Instruments. It perfectly matches the required channel configuration for your modular tool.
 **DBQ Package:** This is a 16-pin SSOP (Shrink Small Outline Package). It is very compact.
-**Isolation Rating:** Because the chip is physically narrow, the creepage distance is smaller. It is rated for 3000 Vrms.
+**Isolation Rating:** Because the chip is physically narrow, the creepage distance is smaller. It is rated for 5000 Vrms.
 
-A 3000 Vrms (3 kV) rating is more than enough to protect your laptop and handle massive ground loops in industrial environments, robotics, drones, or standard RS485/CAN networks. It will easily protect against accidental shorts to 12V or 24V rails.
+A 5000 Vrms (5 kV) rating is more than enough to protect your laptop and handle massive ground loops in industrial environments, robotics, drones, or standard RS485/CAN networks. It will easily protect against accidental shorts to 12V or 24V rails.
 
 You only strictly need the wide-body DW package (5000 Vrms) if your hardware is interacting directly with mains AC voltage (e.g., 220V/110V grid applications) or medical equipment attached to patients, where strict safety regulations mandate 8mm of physical creepage.
 
 #### Part Number Breakdown Confirmation:
-Here is exactly what the part number `ISO7762FQDBQRQ1` means:
-- ISO7762: The base IC (6 Channels: 4 Forward, 2 Reverse).
-- F: Default Output High (Crucial: If the USB is unplugged, the UART lines stay at logic HIGH instead of dropping low and sending garbage data).
-- Q: Automotive Grade (AEC-Q100 qualified) – highly reliable.
-- DBQ: The SSOP-16 package (Narrow footprint, 3kV rating).
-- R: Tape and Reel packaging (ready for Lion Circuits' pick-and-place machines).
-- Q1: Texas Instruments' suffix denoting the Automotive qualification string.
+Here is exactly what the part number `ISO6762DWR` means:
+- ISO6762DWR: The base IC (6 Channels: 4 Forward, 2 Reverse).
+ISO67: The silicon family (Cost-optimized, 50 Mbps general-purpose isolation).
+- 62: The channel configuration (6 total channels: 4 Forward, 2 Reverse).
+- DW: The package type (Wide-body SOIC-16). This dictates your physical PCB footprint and provides the 8mm clearance and creepage needed for 5000 Vrms isolation.
+- R: The packaging format (Tape and Reel). This tells the distributor how the chips are physically shipped to you for pick-and-place assembly.
+- (No Suffix): The absence of an "F" before the package code confirms the default output state is logic HIGH when unpowered.
 
 ---

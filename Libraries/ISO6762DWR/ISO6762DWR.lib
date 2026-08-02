@@ -1,0 +1,37 @@
+EESchema-LIBRARY Version 2.3
+#encoding utf-8
+#SamacSys ECAD Model ISO6762DWR
+#/17067631/2119560/2.50/16/3/Integrated Circuit
+DEF ISO6762DWR IC 0 30 Y Y 1 F N
+F0 "IC" 950 300 50 H V L CNN
+F1 "ISO6762DWR" 950 200 50 H V L CNN
+F2 "SOIC127P1030X265-16N" 950 100 50 H I L CNN
+F3 "https://www.ti.com/lit/ds/symlink/iso6760.pdf?ts=1758161814166&ref_url=https%253A%252F%252Fwww.mouser.kr%252F" 950 0 50 H I L CNN
+F4 "Digital Isolators General purpose 50- Mbps six-channel (4" 950 -100 50 H I L CNN "Description"
+F5 "2.65" 950 -200 50 H I L CNN "Height"
+F6 "595-ISO6762DWR" 950 -300 50 H I L CNN "Mouser Part Number"
+F7 "https://www.mouser.co.uk/ProductDetail/Texas-Instruments/ISO6762DWR?qs=doiCPypUmgElYycVt3RDMQ%3D%3D" 950 -400 50 H I L CNN "Mouser Price/Stock"
+F8 "Texas Instruments" 950 -500 50 H I L CNN "Manufacturer_Name"
+F9 "ISO6762DWR" 950 -600 50 H I L CNN "Manufacturer_Part_Number"
+DRAW
+X VCC1 1 0 0 200 R 50 50 0 0 P
+X INA 2 0 -100 200 R 50 50 0 0 P
+X INB 3 0 -200 200 R 50 50 0 0 P
+X INC 4 0 -300 200 R 50 50 0 0 P
+X IND 5 0 -400 200 R 50 50 0 0 P
+X OUTE 6 0 -500 200 R 50 50 0 0 P
+X OUTF 7 0 -600 200 R 50 50 0 0 P
+X GND1 8 0 -700 200 R 50 50 0 0 P
+X VCC2 16 1100 0 200 L 50 50 0 0 P
+X OUTA 15 1100 -100 200 L 50 50 0 0 P
+X OUTB 14 1100 -200 200 L 50 50 0 0 P
+X OUTC 13 1100 -300 200 L 50 50 0 0 P
+X OUTD 12 1100 -400 200 L 50 50 0 0 P
+X INE 11 1100 -500 200 L 50 50 0 0 P
+X INF 10 1100 -600 200 L 50 50 0 0 P
+X GND2 9 1100 -700 200 L 50 50 0 0 P
+P 5 0 1 6 200 100 900 100 900 -800 200 -800 200 100 N
+ENDDRAW
+ENDDEF
+#
+#End Library
