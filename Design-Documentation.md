@@ -149,6 +149,18 @@ The USBLC6-2SC6 offers:
 2. Rail-to-Rail Topology: Inside the SOT23-6L package, there are four "steering diodes" and one large central TVS clamping diode. If a massive positive ESD spike hits the `D+` line, the steering diode instantly dumps that energy into the `VBUS` line, where the central TVS diode clamps it safely to `GND`. If a negative spike hits, it steers it directly to `GND`.
 3. VBUS Protection Included: Because it connects to the VBUS rail, it also provides a layer of transient protection for the 5V power line itself.
 
+### USB C Overcurrent Protection
+- Part 1 selected: WT1206-050
+- Part 1 Link: [WT1206-050](https://sharvielectronics.com/product/wt1206-050-pptc-resettable-fuse-fuse-6v-500ma-1206-package/?srsltid=AfmBOooZ-QqrnW0wS0_e6LutVeNZSuHTBTzuZISC6iU85kQOpFlGASu-)
+
+- Part 2: 1206L050YR
+- Part 2 Link: [1206L050YR](https://www.lioncircuits.com/parts/1206L050YR?srsltid=AfmBOor-UaOBYRXg38iGdY1AvVDoV_3IbOvpE2enfzJ_iLIpDmzofCsz)
+
+### USB C Power Line TVS Diode (EXTRA)
+- Part Selected: ESD5Z5.0T1G
+- Part Link: [ESD5Z5.0T1G](https://www.lioncircuits.com/parts/ESD5Z5.0T1G?srsltid=AfmBOop8Hnb_ssgq6vq52z1SgommCiPQPrxm-6Xce4t_LaQ80rv-LdHY)
+
+
 #### Schematic Wiring (SOT23-6L Package)
 The USBLC6-2SC6 has 6 pins. It acts as a "pass-through" filter sitting between the Type-C connector and your USB-to-UART Bridge IC.
 - Pin 1 (I/O 1 - Input): Connect to DP1/DP2 (D+) coming directly from the Type-C connector.
